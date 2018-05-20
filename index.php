@@ -1,36 +1,34 @@
 <?php
 
-function generateRandomString($length = 10) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-   
-    return $randomString;
+if (strpos($_SERVER['HTTP_USER_AGENT'], 'curl') === false) {
+    echo '<img src="orig/RAINBOW_FROG.gif" alt="rainbow frog gif" /><br/><a href="https://github.com/zaplitnyak/rainbowfrog">https://github.com/zaplitnyak/rainbowfrog</a>';
+    return 0;
 }
 
-header("Transfer-Encoding: chunked");
-header("Content-Encoding: chunked");
-header("Content-Type: text/html");
-header("Connection: keep-alive");
-flush();
+
+ob_start();
+header('Content-Encoding: chunked');
+header('Content-Type: text/html');
+header('Connection: keep-alive');
+header('X-Accel-Buffering: no');
 ob_flush();
+flush();
 
 $stream = fopen('php://memory','r+');
-$pos=0;
 register_shutdown_function(function () use($stream) { fclose($stream); });
 
+$frames = glob('./ansi/frame*\.ansi');
+$frameCount = count($frames);
+$frameIndex = 0;
+
 while (true) {
-    $begin = "\033[2J\033[H"; 
-    fwrite($stream, $begin);
+    $frameIndex === $frameCount AND $frameIndex = 0;
     rewind($stream);
-    echo stream_get_contents($stream, $pos += strlen($begin));
-    $str = generateRandomString();
-    fwrite($stream, $str);
+    $frameString = "\033[2J\033[H". file_get_contents($frames[$frameIndex++]);
+    fwrite($stream, $frameString);
     rewind($stream);
-    echo stream_get_contents($stream, $pos, $pos += strlen($str));
-    flush();
+    echo stream_get_contents($stream, strlen($frameString));
     ob_flush();
+    flush();
+    usleep(60000);
 }
