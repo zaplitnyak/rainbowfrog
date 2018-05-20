@@ -1,7 +1,12 @@
 <?php
 
 if (strpos($_SERVER['HTTP_USER_AGENT'], 'curl') === false) {
-    echo '<img src="orig/RAINBOW_FROG.gif" alt="rainbow frog gif" /><br/><a href="https://github.com/zaplitnyak/rainbowfrog">https://github.com/zaplitnyak/rainbowfrog</a>';
+    echo '
+        <img src="orig/RAINBOW_FROG.gif" alt="rainbow frog gif" />
+        <br/>
+        <a href="https://github.com/zaplitnyak/rainbowfrog">https://github.com/zaplitnyak/rainbowfrog</a>
+    ';
+
     return 0;
 }
 
