@@ -5,8 +5,7 @@ require __DIR__ . '/vendor/autoload.php';
 use Psr\Http\Message\ServerRequestInterface;
 use React\EventLoop\Factory;
 use React\Http\Response;
-use React\Http\Server;
-use React\Stream\ReadableResourceStream;
+use React\Http\Server as HttpServer;
 use React\Stream\ThroughStream;
 
 $loop = Factory::create();
@@ -17,7 +16,7 @@ foreach ($frameFiles as $frameFile) {
     $frames[] = @file_get_contents($frameFile);
 }
 
-$server = new Server(function (ServerRequestInterface $request) use ($loop, $frames) {
+$server = new HttpServer(function (ServerRequestInterface $request) use ($loop, $frames) {
     if ($request->getMethod() !== 'GET' || $request->getUri()->getPath() !== '/') {
         return new Response(
             301,
@@ -46,7 +45,7 @@ $server = new Server(function (ServerRequestInterface $request) use ($loop, $fra
         $stream
     );
 });
-$socket = new \React\Socket\Server(isset($argv[1]) ? $argv[1] : '127.0.0.1:9080', $loop);
+$socket = new React\Socket\Server(isset($argv[1]) ? $argv[1] : '127.0.0.1:9080', $loop);
 $server->listen($socket);
 
 echo 'Listening on ' . str_replace('tcp:', 'http:', $socket->getAddress()) . PHP_EOL;
