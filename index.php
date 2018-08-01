@@ -35,5 +35,5 @@ while (true) {
     echo stream_get_contents($stream, strlen($frameString));
     ob_flush();
     flush();
-    usleep(60000);
+    usleep(40000);
 }
