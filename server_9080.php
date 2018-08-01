@@ -19,7 +19,13 @@ foreach ($frameFiles as $frameFile) {
 
 $server = new Server(function (ServerRequestInterface $request) use ($loop, $frames) {
     if ($request->getMethod() !== 'GET' || $request->getUri()->getPath() !== '/') {
-        return new Response(301, ['Location' => 'https://github.com/zaplitnyak/rainbowfrog']);
+        return new Response(
+            301,
+            [
+                 'Location' => 'https://github.com/zaplitnyak/rainbowfrog',
+                 'x-backend' => 'wwwR1',
+            ]
+       );
     }
 
     $frameIndex = 0;
